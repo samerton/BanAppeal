@@ -6,10 +6,10 @@
  *  License: MIT
  */
 
-// Initialise the banappeal addon
+// Initialise the ban appeal addon
 // We've already checked to see if it's enabled
 
 require('addons/BanAppeal/language.php');
 
 // Enabled, add links to navbar
-$navbar_array[] = array('banappeal' => $banappeal_language['banappeal_icon'] . $banappeal_language['banappeal']);
+$navbar_array[] = array('banappeal' => $banappeal_language['ban_appeal_icon'] . $banappeal_language['ban_appeal']);
