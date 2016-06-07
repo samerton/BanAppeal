@@ -29,7 +29,7 @@ Authors: Partydragen<br />
 Version: 1.0.0<br />
 Description: Coming soon<br />
 
-						<h4><?php echo $navbar_language['staff_apps']; ?></h4>
+						<h4><?php echo $banappeal_language['ban_appeal']; ?></h4>
 						<?php 
 							if(!isset($_GET['module_action']) && !isset($_GET['question'])){
 								if(Session::exists('apps_post_success')){
@@ -73,17 +73,17 @@ Description: Coming soon<br />
 								$groups = $queries->getWhere('groups', array('id', '<>', '0'));
 						?>
 						<form role="form" action="" method="post">
-						  <strong><?php echo $admin_language['permissions']; ?></strong><br /><br />
+						  <strong><?php echo $banappeal_language['permissions']; ?></strong><br /><br />
 						  <div class="row">
 						    <div class="col-md-8">
 							  <div class="col-md-6">
-							    <?php echo $admin_language['group']; ?>
+							    <?php echo $banappeal_language['group']; ?>
 							  </div>
 							  <div class="col-md-3">
-							    <?php echo $admin_language['view_applications']; ?>
+							    <?php echo $banappeal_language['view_ban_appeal']; ?>
 							  </div>
 							  <div class="col-md-3">
-							    <?php echo $admin_language['accept_reject_applications']; ?>
+							    <?php echo $banappeal_language['accept_reject_banappeal']; ?>
 							  </div>
 							</div>
 						  </div>
@@ -113,11 +113,11 @@ Description: Coming soon<br />
 						  ?>
 						  <br /><br />
 						  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
-						  <input type="submit" class="btn btn-default" value="<?php echo $general_language['submit']; ?>">
+						  <input type="submit" class="btn btn-default" value="<?php echo $banappeal_language['submit']; ?>">
 						</form>
 						
 						<br /><br />
-						<strong><?php echo $admin_language['questions']; ?></strong> <span class="pull-right"><a href="/admin/addons/?action=edit&amp;addon=BanAppeal&amp;module_action=new" class="btn btn-primary"><?php echo $admin_language['new_question']; ?></a></span><br />
+						<strong><?php echo $admin_language['questions']; ?></strong> <span class="pull-right"><a href="/admin/addons/?action=edit&amp;addon=BanAppeal&amp;module_action=new" class="btn btn-primary"><?php echo $banappeal_language['new_question']; ?></a></span><br />
 						<?php 
 						// Get a list of questions
 						$questions = $queries->getWhere('banappeal_questions', array('id', '<>', 0));
@@ -125,10 +125,10 @@ Description: Coming soon<br />
 						?>
 						<table class="table table-striped">
 						  <tr>
-							<th><?php echo $admin_language['name']; ?></th>
-							<th><?php echo $admin_language['question']; ?></th>
-							<th><?php echo $admin_language['type']; ?></th>
-							<th><?php echo $admin_language['options']; ?></th>
+							<th><?php echo $banappeal_language['name']; ?></th>
+							<th><?php echo $banappeal_language['question']; ?></th>
+							<th><?php echo $banappeal_language['type']; ?></th>
+							<th><?php echo $banappeal_language['options']; ?></th>
 						  </tr>
 						<?php
 							foreach($questions as $question){
@@ -148,7 +148,7 @@ Description: Coming soon<br />
 								echo '<a href="/admin/addons/?action=edit&addon=BanAppeal&question=' . $question->id . '"></a><br />';
 							}
 						} else {
-							echo $admin_language['no_questions'];
+							echo $banappeal_language['no_questions'];
 						}
 						?>
 						</table>
@@ -207,25 +207,25 @@ Description: Coming soon<br />
 						
 								$question = $question[0];
 						?>
-						<strong><?php echo $admin_language['editing_question']; ?></strong>
-						<span class="pull-right"><a href="/admin/addons/?action=edit&amp;addon=BanAppeal&amp;question=<?php echo $question->id; ?>&amp;module_action=delete" onclick="return confirm('<?php echo $forum_language['confirm_cancellation']; ?>');" class="btn btn-danger"><?php echo $admin_language['delete_question']; ?></a></span>
+						<strong><?php echo $banappeal_language['editing_question']; ?></strong>
+						<span class="pull-right"><a href="/admin/addons/?action=edit&amp;addon=BanAppeal&amp;question=<?php echo $question->id; ?>&amp;module_action=delete" onclick="return confirm('<?php echo $banappeal_language['confirm_cancellation']; ?>');" class="btn btn-danger"><?php echo $banappeal_language['delete_question']; ?></a></span>
 						<br /><br />
 						
 						<form method="post" action="">
-						  <label for="name"><?php echo $admin_language['name']; ?></label>
-						  <input class="form-control" type="text" name="name" id="name" placeholder="<?php echo $admin_language['name']; ?>" value="<?php echo htmlspecialchars($question->name); ?>">
+						  <label for="name"><?php echo $banappeal_language['name']; ?></label>
+						  <input class="form-control" type="text" name="name" id="name" placeholder="<?php echo $banappeal_language['name']; ?>" value="<?php echo htmlspecialchars($question->name); ?>">
 						  <br />
-						  <label for="question"><?php echo $admin_language['question']; ?></label>
-						  <input class="form-control" type="text" name="question" id="question" placeholder="<?php echo $admin_language['question']; ?>" value="<?php echo htmlspecialchars($question->question); ?>">
+						  <label for="question"><?php echo $banappeal_language['question']; ?></label>
+						  <input class="form-control" type="text" name="question" id="question" placeholder="<?php echo $banappeal_language['question']; ?>" value="<?php echo htmlspecialchars($question->question); ?>">
 						  <br />
 						  <label for="type"><?php echo $admin_language['type']; ?></label>
 						  <select name="type" id="type" class="form-control">
-							<option value="1"<?php if($question->type == 1){ ?> selected<?php } ?>><?php echo $admin_language['dropdown']; ?></option>
-							<option value="2"<?php if($question->type == 2){ ?> selected<?php } ?>><?php echo $admin_language['text']; ?></option>
-							<option value="3"<?php if($question->type == 3){ ?> selected<?php } ?>><?php echo $admin_language['textarea']; ?></option>
+							<option value="1"<?php if($question->type == 1){ ?> selected<?php } ?>><?php echo $banappeal_language['dropdown']; ?></option>
+							<option value="2"<?php if($question->type == 2){ ?> selected<?php } ?>><?php echo $banappeal_language['text']; ?></option>
+							<option value="3"<?php if($question->type == 3){ ?> selected<?php } ?>><?php echo $banappeal_language['textarea']; ?></option>
 						  </select>
 						  <br />
-						  <label for="options"><?php echo $admin_language['options']; ?> - <em><?php echo $admin_language['options_help']; ?></em></label>
+						  <label for="options"><?php echo $banappeal_language['options']; ?> - <em><?php echo $banappeal_language['options_help']; ?></em></label>
 						  <?php
 						  // Get already inputted options
 						  if($question->options == null){
@@ -234,10 +234,10 @@ Description: Coming soon<br />
 							  $options = str_replace(',', "\n", htmlspecialchars($question->options));
 						  }
 						  ?>
-						  <textarea rows="5" class="form-control" name="options" id="options" placeholder="<?php echo $admin_language['options']; ?>"><?php echo $options; ?></textarea>
+						  <textarea rows="5" class="form-control" name="options" id="options" placeholder="<?php echo $banappeal_language['options']; ?>"><?php echo $options; ?></textarea>
 						  <br />
 						  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
-						  <input type="submit" class="btn btn-primary" value="<?php echo $general_language['submit']; ?>">
+						  <input type="submit" class="btn btn-primary" value="<?php echo $banappeal_language['submit']; ?>">
 						</form>
 						
 						
@@ -282,27 +282,27 @@ Description: Coming soon<br />
 									}
 								}
 						?>
-						<strong><?php echo $admin_language['new_question']; ?></strong><br /><br />
+						<strong><?php echo $banappeal_language['new_question']; ?></strong><br /><br />
 						
 						<form method="post" action="">
-						  <label for="name"><?php echo $admin_language['name']; ?></label>
-						  <input class="form-control" type="text" name="name" id="name" placeholder="<?php echo $admin_language['name']; ?>">
+						  <label for="name"><?php echo $banappeal_language['name']; ?></label>
+						  <input class="form-control" type="text" name="name" id="name" placeholder="<?php echo $banappeal_language['name']; ?>">
 						  <br />
-						  <label for="question"><?php echo $admin_language['question']; ?></label>
-						  <input class="form-control" type="text" name="question" id="question" placeholder="<?php echo $admin_language['question']; ?>">
+						  <label for="question"><?php echo $banappeal_language['question']; ?></label>
+						  <input class="form-control" type="text" name="question" id="question" placeholder="<?php echo $banappeal_language['question']; ?>">
 						  <br />
-						  <label for="type"><?php echo $admin_language['type']; ?></label>
+						  <label for="type"><?php echo $banappeal_language['type']; ?></label>
 						  <select name="type" id="type" class="form-control">
-							<option value="1"><?php echo $admin_language['dropdown']; ?></option>
-							<option value="2"><?php echo $admin_language['text']; ?></option>
-							<option value="3"><?php echo $admin_language['textarea']; ?></option>
+							<option value="1"><?php echo $banappeal_language['dropdown']; ?></option>
+							<option value="2"><?php echo $banappeal_language['text']; ?></option>
+							<option value="3"><?php echo $banappeal_language['textarea']; ?></option>
 						  </select>
 						  <br />
-						  <label for="options"><?php echo $admin_language['options']; ?> - <em><?php echo $admin_language['options_help']; ?></em></label>
-						  <textarea rows="5" class="form-control" name="options" id="options" placeholder="<?php echo $admin_language['options']; ?>"></textarea>
+						  <label for="options"><?php echo $banappeal_language['options']; ?> - <em><?php echo $banappeal_language['options_help']; ?></em></label>
+						  <textarea rows="5" class="form-control" name="options" id="options" placeholder="<?php echo $banappeal_language['options']; ?>"></textarea>
 						  <br />
 						  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
-						  <input type="submit" class="btn btn-primary" value="<?php echo $general_language['submit']; ?>">
+						  <input type="submit" class="btn btn-primary" value="<?php echo $banappeal_language['submit']; ?>">
 						</form>
 						<?php 
 							} else if(isset($_GET['module_action']) && $_GET['module_action'] == 'delete' && isset($_GET['question'])) {
@@ -323,7 +323,7 @@ Description: Coming soon<br />
 								// Exists, we can delete it
 								$queries->delete('banappeal_questions', array('id', '=', $question_id));
 								
-								Session::flash('apps_post_success', '<div class="alert alert-info">' . $admin_language['question_deleted'] . '</div>');
+								Session::flash('apps_post_success', '<div class="alert alert-info">' . $banappeal_language['question_deleted'] . '</div>');
 								echo '<script data-cfasync="false">window.location.replace(\'/admin/addons/?action=edit&addon=BanAppeal\');</script>';
 								die();
 							}
