@@ -13,8 +13,7 @@ require('core/includes/htmlpurifier/HTMLPurifier.standalone.php');
  *  User must be logged in
  */
 if(!$user->isLoggedIn()){
-	Session::flash('home', '<div class="alert alert-warning">' . $user_language['not_logged_in'] . '</div>');
-	Redirect::to('/');
+	Redirect::to('/signin');
 	die();
 }
 
@@ -64,9 +63,9 @@ if(Input::exists()){
 			foreach($mod_users as $individual){
 				$queries->create('alerts', array(
 					'user_id' => $individual->id,
-					'type' => $user_language['staff_application'],
-					'url' => '/mod/applications/?app=' . $app_id,
-					'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $mod_language['new_app_submitted_alert']),
+					'type' => $banappeal_language['ban_appeal'],
+					'url' => '/mod/banappeal/?app=' . $app_id,
+					'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $banappeal_language['new_ban_appeal_submitted_alert']),
 					'created' => date('U')
 				));
 			}
@@ -93,7 +92,7 @@ if(!isset($completed)){
 	$already_submitted = null;
 }
 
-$page = $navbar_language['staff_apps'];
+$page = $banappeal_language['ban_appeal'];
 
 ?>
 <!DOCTYPE html>
@@ -137,7 +136,7 @@ $page = $navbar_language['staff_apps'];
 	    }
 	?>
 	  <div class="well">
-		<h2><?php echo $user_language['staff_application']; ?></h2>
+		<h2><?php echo $banappeal_language['ban_appeal']; ?></h2>
 		<?php
 		if(!isset($completed)){
 		?>
@@ -182,7 +181,7 @@ $page = $navbar_language['staff_apps'];
 			?>
 			  <br />
 			  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
-			  <input type="submit" class="btn btn-primary" value="<?php echo $general_language['submit']; ?>">
+			  <input type="submit" class="btn btn-primary" value="<?php echo $banappeal_language['submit']; ?>">
 			</form>
 		  </div>
 		</div>
@@ -193,7 +192,7 @@ $page = $navbar_language['staff_apps'];
 			}
 			if($completed === 2){
 		?>
-		<div class="alert alert-info"><?php echo $user_language['application_already_submitted']; ?></div>
+		<div class="alert alert-info"><?php echo $banappeal_language['ban_appeal_already_submitted']; ?></div>
 		<?php
 			}
 		}
