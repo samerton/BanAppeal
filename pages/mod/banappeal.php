@@ -17,7 +17,7 @@ if($user->isLoggedIn()){
 // page for ModCP sidebar
 $mod_page = 'banappeal';
 if(isset($_GET['app'])){
-	// Does the application exist?
+	// Does the ban appeal exist?
 	$application = $queries->getWhere('banappeal_replies', array('id', '=', htmlspecialchars($_GET['app'])));
 	if(empty($application)){
 		// Doesn't exist
@@ -47,7 +47,7 @@ if(isset($_GET['app'])){
 								'time' => date('U'),
 								'content' => htmlspecialchars(Input::get('comment'))
 							));
-							Session::flash('mod_staff_app', '<div class="alert alert-info alert-dismissable"> <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>' . $mod_language['comment_added'] . '</div>');
+							Session::flash('mod_staff_app', '<div class="alert alert-info alert-dismissable"> <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>' . $banappeal_language['comment_added'] . '</div>');
 						} catch(Exception $e){
 							die($e->getMessage());
 						}
@@ -77,9 +77,9 @@ if(isset($_GET['app'])){
 					// Add alert to tell user that it's been accepted
 					$queries->create('alerts', array(
 						'user_id' => $user_posted,
-						'type' => $user_language['staff_application'],
+						'type' => $banappeal_language['ban_appeal'],
 						'url' => '#',
-						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $user_language['application_accepted']),
+						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $user_language['ban_appeal_accepted']),
 						'created' => date('U')
 					));
 					
@@ -91,9 +91,9 @@ if(isset($_GET['app'])){
 					// Add alert to tell user that it's been rejected
 					$queries->create('alerts', array(
 						'user_id' => $user_posted,
-						'type' => $user_language['staff_application'],
+						'type' => $banappeal_language['ban_appeal'],
 						'url' => '#',
-						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $user_language['application_rejected']),
+						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $banappeal_language['ban_appeal_rejected']),
 						'created' => date('U')
 					));
 					
@@ -123,7 +123,7 @@ require('core/includes/htmlpurifier/HTMLPurifier.standalone.php');
 	<?php
 	// Generate header and navbar content
 	// Page title
-	$title = $mod_language['mod_cp'] . ' - ' . $navbar_language['staff_apps'];
+	$title = $mod_language['mod_cp'] . ' - ' . $banappeal_language['ban_appeal'];
 	
 	require('core/includes/template/generate.php');
 	?>
@@ -205,18 +205,18 @@ require('core/includes/htmlpurifier/HTMLPurifier.standalone.php');
 				  echo Session::flash('mod_staff_app');
 				}
 				
-                echo str_replace('{x}', '<a href="/profile/' . $username . '">' . $username . '</a>', $mod_language['viewing_app_from']);
+                echo str_replace('{x}', '<a href="/profile/' . $username . '">' . $username . '</a>', $banappeal_language['viewing_ban_appeal_from']);
 				if($application->status == 0){ 
 					?>
-					<span class="label label-info"><?php echo $mod_language['open']; ?></span>
+					<span class="label label-info"><?php echo $banappeal_language['open']; ?></span>
 					<?php 
 				} else if($application->status == 1){ 
 					?>
-					<span class="label label-success"><?php echo $mod_language['accepted']; ?></span>
+					<span class="label label-success"><?php echo $banappeal_language['accepted']; ?></span>
 					<?php 
 				} else if($application->status == 2){ 
 					?>
-					<span class="label label-danger"><?php echo $mod_language['declined']; ?></span>
+					<span class="label label-danger"><?php echo $banappeal_language['declined']; ?></span>
 					<?php 
 				} 
 				?>
@@ -246,7 +246,7 @@ require('core/includes/htmlpurifier/HTMLPurifier.standalone.php');
 			}
 			?>
 			<hr>
-			<h4><?php echo $mod_language['comments']; ?></h4>
+			<h4><?php echo $banappeal_language['comments']; ?></h4>
 			<?php
 			// Get comments
 			$comments = $queries->getWhere('banappeal_comments', array('aid', '=', $application->id));
