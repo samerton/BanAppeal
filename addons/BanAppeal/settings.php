@@ -23,8 +23,6 @@ if($user->isLoggedIn()){
 	die();
 }
 
-	$BanAppeal = $queries->getWhere('addons', array('name', '=', 'BanAppeal'));
-
 $banappeal_questions = $queries->tableExists('banappeal_questions');
 if(empty($banappeal_questions)){
 		$data = $queries->alterTable("groups", "banappeal", "tinyint(1) NOT NULL DEFAULT '0'");
@@ -33,8 +31,7 @@ if(empty($banappeal_questions)){
  		$data = $queries->createTable("banappeal_questions", " `id` int(11) NOT NULL AUTO_INCREMENT, `type` int(11) NOT NULL, `name` varchar(16) NOT NULL, `question` varchar(256) NOT NULL, `options` text NOT NULL, PRIMARY KEY (`id`)", "ENGINE=InnoDB DEFAULT CHARSET=latin1");
  		$data = $queries->createTable("banappeal_replies", " `id` int(11) NOT NULL AUTO_INCREMENT, `uid` int(11) NOT NULL, `time` int(11) NOT NULL, `content` mediumtext NOT NULL, `status` int(11) NOT NULL DEFAULT '0', PRIMARY KEY (`id`)", "ENGINE=InnoDB DEFAULT CHARSET=latin1");
  	}
- 	
- 
+
 ?>
 <h3>Addon: BanAppeal</h3>
 Authors: Partydragen<br />
