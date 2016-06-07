@@ -7,7 +7,7 @@
 // Language file for "banappeal" addon
 $banappeal_language = array(
 	'ban_appeal' => 'Ban Appeal',
-	'ban_appeal_icon' => '<i class="fa fa-users"></i> ', // Icon to display before the text in the navbar
+	'ban_appeal_icon' => '', // Icon to display before the text in the navbar
 	'viewing_open_ban_appeal' => 'Viewing <span class="label label-info">open</span> ban appeal. Change to <a href="/mod/banappeal/?view=accepted"><span class="label label-success">accepted</span></a> or <a href="/mod/banappeal/?view=declined"><span class="label label-danger">declined</span></a>.',
 	'viewing_accepted_ban_appeal' => 'Viewing <span class="label label-success">accepted</span> ban appeal. Change to <a href="/mod/banappeal/"><span class="label label-info">open</span></a> or <a href="/mod/banappeal/?view=declined"><span class="label label-danger">declined</span></a>.',
 	'viewing_declined_ban_appeal' => 'Viewing <span class="label label-danger">declined</span> ban appeal. Change to <a href="/mod/banappeal/"><span class="label label-info">open</span></a> or <a href="/mod/banappeal/?view=accepted"><span class="label label-success">accepted</span></a>.',
