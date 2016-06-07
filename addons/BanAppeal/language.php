@@ -46,6 +46,7 @@ $banappeal_language = array(
 	'textarea' => 'Text Area',
 	'question_deleted' => 'Question Deleted',
 	'group' => 'Group',
+	'groups' => 'Groups',
 	'name' => 'Name',
 	'confirm_cancellation' => 'Are you sure?',
 );
