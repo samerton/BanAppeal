@@ -21,17 +21,11 @@ if(!$user->isLoggedIn()){
 /*
  *  Check if page is enabled
  */
- 
- 
- 
-/*
-$banappeal = $queries->getWhere('core_modules', array('name', '=', 'BanAppeal'));
+$banappeal = $queries->getWhere('addons', array('name', '=', 'BanAppeal'));
 if($banappeal[0]->enabled == 0){
 	Redirect::to('/');
 	die();
 }
-*/ 
-
 
 /* 
  *  Handle input
@@ -81,7 +75,7 @@ if(Input::exists()){
 }
 
 if(!isset($completed)){
-	// Has the user already submitted an application?
+	// Has the user already submitted an Ban Appeal?
 	$already_submitted = $queries->getWhere('banappeal_replies', array('uid', '=', $user->data()->id));
 	foreach($already_submitted as $item){
 		if($item->status == 0){
@@ -101,7 +95,7 @@ $page = $banappeal_language['ban_appeal'];
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Staff application page for the <?php echo $sitename; ?> community">
+    <meta name="description" content="Ban Appeal page for the <?php echo $sitename; ?> community">
     <meta name="author" content="Partydragen">
 	<meta name="robots" content="noindex">
 	<?php if(isset($custom_meta)){ echo $custom_meta; } ?>
