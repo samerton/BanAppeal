@@ -4,9 +4,7 @@
  *  http://partydragen.com/
  *
  */
-
 // Language file for "banappeal" addon
-
 $banappeal_language = array(
 	'ban_appeal' => 'Ban Appeal',
 	'ban_appeal_icon' => '<i class="fa fa-users"></i> ', // Icon to display before the text in the navbar
@@ -31,7 +29,7 @@ $banappeal_language = array(
 	'ban_appeal_already_submitted' => 'You\'ve already submitted an ban appeal. Please wait until it is complete before submitting another.',
 	'ban_appeal_accepted' => 'Your ban appeal has been accepted.',
 	'ban_appeal_rejected' => 'Your ban appeal has been rejected.',
-        'permissions' => 'Permissions:',
+    'permissions' => 'Permissions:',
 	'view_ban_appeal' => 'View Ban Appeal?',
 	'accept_reject_ban_appeal' => 'Accept/Reject Ban Appeal?',
 	'questions' => 'Questions:',
