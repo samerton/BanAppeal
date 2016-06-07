@@ -52,7 +52,7 @@ if(isset($_GET['app'])){
 							die($e->getMessage());
 						}
 					} else {
-						Session::flash('mod_staff_app', '<div class="alert alert-danger">' . $mod_language['comment_error'] . '</div>');
+						Session::flash('mod_staff_app', '<div class="alert alert-danger">' . $banappeal_language['comment_error'] . '</div>');
 					}
 				} else {
 					// Invalid token
@@ -66,7 +66,7 @@ if(isset($_GET['app'])){
 			$questions = $queries->getWhere('banappeal_questions', array('id', '<>', 0));
 		} else {
 			// Can the user actually accept an application?
-			if($user->canAcceptApps($user->data()->id)){
+			if($user->canAcceptBanAppeal($user->data()->id)){
 				// Who posted the app?
 				$user_posted = $application->uid;
 				
@@ -79,7 +79,7 @@ if(isset($_GET['app'])){
 						'user_id' => $user_posted,
 						'type' => $banappeal_language['ban_appeal'],
 						'url' => '#',
-						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $ban_appeal_language['banappeal_accepted']),
+						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $banappeal_language['ban_appeal_accepted']),
 						'created' => date('U')
 					));
 					
@@ -224,7 +224,7 @@ require('core/includes/htmlpurifier/HTMLPurifier.standalone.php');
 			<span class="pull-right">
 			  <?php 
 			  // Can the user accept banappeal?
-			  if($application->status == 0 && $user->canAcceptApps($user->data()->id)){
+			  if($application->status == 0 && $user->canAcceptBanAppeal($user->data()->id)){
 			  ?>
 			  <div class="btn-group">
 			    <a href="/mod/banappeal/?app=<?php echo $application->id; ?>&action=accept" class="btn btn-success"><?php echo $banappeal_language['accept']; ?></a><a href="/mod/banappeal/?app=<?php echo $application->id; ?>&action=reject" class="btn btn-danger"><?php echo $banappeal_language['decline']; ?></a>
