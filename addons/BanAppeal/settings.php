@@ -83,7 +83,7 @@ Description: Coming soon<br />
 							    <?php echo $banappeal_language['view_ban_appeal']; ?>
 							  </div>
 							  <div class="col-md-3">
-							    <?php echo $banappeal_language['accept_reject_banappeal']; ?>
+							    <?php echo $banappeal_language['accept_reject_ban_appeal']; ?>
 							  </div>
 							</div>
 						  </div>
