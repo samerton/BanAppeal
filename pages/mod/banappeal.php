@@ -79,7 +79,7 @@ if(isset($_GET['app'])){
 						'user_id' => $user_posted,
 						'type' => $banappeal_language['ban_appeal'],
 						'url' => '#',
-						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $ban_appeal_language['ban_appeal_accepted']),
+						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $ban_appeal_language['banappeal_accepted']),
 						'created' => date('U')
 					));
 					
