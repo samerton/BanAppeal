@@ -34,11 +34,12 @@ if(empty($banappeal_questions)){
 
 ?>
 <h3>Addon: BanAppeal</h3>
-Authors: Partydragen<br />
-Version: 1.0.0<br />
-Description: Coming soon<br />
+<b>Authors:</b> Partydragen<br />
+<b>Version:</b> 1.0.0<br />
+<b>Description:</b> Allow your players to post a Ban Appeal<br />
+<b>Donate:</b> <a href="http://partydragen.com/donate/">Click here</a> If you want to donate to partydragen to give partydragen more motivation to keep updates and create more addons<br />
 
-						<h4><?php echo $banappeal_language['ban_appeal']; ?></h4>
+						<h3><?php echo $banappeal_language['ban_appeal']; ?></h3>
 						<?php 
 							if(!isset($_GET['module_action']) && !isset($_GET['question'])){
 								if(Session::exists('apps_post_success')){
@@ -86,7 +87,7 @@ Description: Coming soon<br />
 						  <div class="row">
 						    <div class="col-md-8">
 							  <div class="col-md-6">
-							    <?php echo $banappeal_language['group']; ?>
+							    <?php echo $banappeal_language['groups']; ?>
 							  </div>
 							  <div class="col-md-3">
 							    <?php echo $banappeal_language['view_ban_appeal']; ?>
