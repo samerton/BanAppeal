@@ -3,113 +3,127 @@
  *	Made by Partydragen
  *  http://partydragen.com/
  *
- *  License: MIT
  */
-
-// HTMLPurifier
-require('core/includes/htmlpurifier/HTMLPurifier.standalone.php');
-
-/*
- *  User must be logged in
- */
-if(!$user->isLoggedIn()){
-	Redirect::to('/signin');
-	die();
-}
-
-
-/*
- *  Check if page is enabled
- */
- 
- 
- 
-/*
-$banappeal = $queries->getWhere('core_modules', array('name', '=', 'BanAppeal'));
-if($banappeal[0]->enabled == 0){
+// Mod check
+if($user->isLoggedIn()){
+	if(!$user->canViewMCP($user->data()->id)){
+		Redirect::to('/');
+		die();
+	}
+} else {
 	Redirect::to('/');
 	die();
 }
-*/ 
-
-
-/* 
- *  Handle input
- */
-if(Input::exists()){
-	if(Token::check(Input::get('token'))){
-		// Get all answers into one string
-		unset($_POST['token']);
-		
-		$content = array();
-		foreach($_POST as $key => $item){
-			$content[] = array($key, htmlspecialchars($item));
-		}
-		
-		$content = json_encode($content);
-		
-		$queries->create('banappeal_replies', array(
-			'uid' => $user->data()->id,
-			'time' => date('U'),
-			'content' => $content
-		));
-		
-		$app_id = $queries->getLastId();
-		
-		// Moderator alerts
-		$mod_groups = $queries->getWhere('groups', array('banappeal', '=', 1));
-		foreach($mod_groups as $mod_group){
-			$mod_users = $queries->getWhere('users', array('group_id', '=', $mod_group->id));
-			foreach($mod_users as $individual){
-				$queries->create('alerts', array(
-					'user_id' => $individual->id,
-					'type' => $banappeal_language['ban_appeal'],
-					'url' => '/mod/banappeal/?app=' . $app_id,
-					'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $banappeal_language['new_ban_appeal_submitted_alert']),
-					'created' => date('U')
-				));
-			}
-		}
-		
-		Session::flash('app_success', '<div class="alert alert-success">' . $user_language['application_submitted'] . '</div>');
-		$completed = 1;
-		
+// page for ModCP sidebar
+$mod_page = 'banappeal';
+if(isset($_GET['app'])){
+	// Does the application exist?
+	$application = $queries->getWhere('banappeal_replies', array('id', '=', htmlspecialchars($_GET['app'])));
+	if(empty($application)){
+		// Doesn't exist
+		echo '<script>window.location.replace(\'/mod/banappeal\');</script>';
+		die();
 	} else {
-		// Invalid token
-		Session::flash('app_succes', '<div class="alert alert-danger">' . $admin_language['invalid_token'] . '</div>');
-	}
-}
-
-if(!isset($completed)){
-	// Has the user already submitted an application?
-	$already_submitted = $queries->getWhere('banappeal_replies', array('uid', '=', $user->data()->id));
-	foreach($already_submitted as $item){
-		if($item->status == 0){
-			$completed = 2;
-			break;
+		$application = $application[0];
+		
+		if(!isset($_GET['action'])){
+			// Handle comment input
+			if(Input::exists()){
+				if(Token::check(Input::get('token'))){
+					// Valid token
+					$validate = new Validate();
+					$validation = $validate->check($_POST, array(
+						'comment' => array(
+							'required' => true,
+							'min' => 2,
+							'max' => 2048
+						)
+					));
+					if($validation->passed()){
+						try {
+							$queries->create("banappeal_comments", array(
+								'aid' => $application->id,
+								'uid' => $user->data()->id,
+								'time' => date('U'),
+								'content' => htmlspecialchars(Input::get('comment'))
+							));
+							Session::flash('mod_staff_app', '<div class="alert alert-info alert-dismissable"> <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>' . $mod_language['comment_added'] . '</div>');
+						} catch(Exception $e){
+							die($e->getMessage());
+						}
+					} else {
+						Session::flash('mod_staff_app', '<div class="alert alert-danger">' . $mod_language['comment_error'] . '</div>');
+					}
+				} else {
+					// Invalid token
+					Session::flash('mod_staff_app', '<div class="alert alert-danger">' . $admin_language['invalid_token'] . '</div>');
+				}
+			}
+			
+			// Decode the questions/answers
+			$answers = json_decode($application->content, true);
+			// Get questions
+			$questions = $queries->getWhere('banappeal_questions', array('id', '<>', 0));
+		} else {
+			// Can the user actually accept an application?
+			if($user->canAcceptApps($user->data()->id)){
+				// Who posted the app?
+				$user_posted = $application->uid;
+				
+				if($_GET['action'] == 'accept'){
+					$queries->update('banappeal_replies', $application->id, array(
+						'status' => 1
+					));
+					// Add alert to tell user that it's been accepted
+					$queries->create('alerts', array(
+						'user_id' => $user_posted,
+						'type' => $user_language['staff_application'],
+						'url' => '#',
+						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $user_language['application_accepted']),
+						'created' => date('U')
+					));
+					
+					
+				} else if($_GET['action'] == 'reject'){
+					$queries->update('banappeal_replies', $application->id, array(
+						'status' => 2
+					));
+					// Add alert to tell user that it's been rejected
+					$queries->create('alerts', array(
+						'user_id' => $user_posted,
+						'type' => $user_language['staff_application'],
+						'url' => '#',
+						'content' => str_replace('{x}', htmlspecialchars($user->data()->username), $user_language['application_rejected']),
+						'created' => date('U')
+					));
+					
+				}
+			}
+			Redirect::to('/mod/banappeal/?app=' . $application->id);
+			die();
 		}
 	}
-	$already_submitted = null;
 }
-
-$page = $banappeal_language['ban_appeal'];
-
+$token = Token::generate();
+// HTMLPurifier
+require('core/includes/htmlpurifier/HTMLPurifier.standalone.php');
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Staff application page for the <?php echo $sitename; ?> community">
-    <meta name="author" content="Partydragen">
+    <meta name="description" content="Moderator panel">
+    <meta name="author" content="Samerton">
 	<meta name="robots" content="noindex">
 	<?php if(isset($custom_meta)){ echo $custom_meta; } ?>
 	
 	<?php
 	// Generate header and navbar content
 	// Page title
-	$title = $navbar_language['staff_apps'];
+	$title = $mod_language['mod_cp'] . ' - ' . $navbar_language['staff_apps'];
 	
 	require('core/includes/template/generate.php');
 	?>
@@ -120,7 +134,7 @@ $page = $banappeal_language['ban_appeal'];
 		overflow-y: scroll;
 	}
 	</style>
-	
+
   </head>
 
   <body>
@@ -128,78 +142,169 @@ $page = $banappeal_language['ban_appeal'];
 	// Load navbar
 	$smarty->display('styles/templates/' . $template . '/navbar.tpl');
 	?>
-	
-	<div class="container">
-	<?php 
-	    if(Session::exists('staff_app')){
-		  echo Session::flash('staff_app');
-	    }
-	?>
-	  <div class="well">
-		<h2><?php echo $banappeal_language['ban_appeal']; ?></h2>
-		<?php
-		if(!isset($completed)){
-		?>
-		<div class="row">
-		  <div class="col-md-5">
-			<form action="" method="post">
-			<?php 
-			// Get all questions
-			$questions = $queries->getWhere('banappeal_questions', array('id', '<>', 0)); 
-			
-			foreach($questions as $question){
-				if($question->type == 3){
-					// text area
-			?>
-			  <label for="<?php echo htmlspecialchars($question->name); ?>"><?php echo htmlspecialchars($question->question); ?></label>
-			  <textarea class="form-control" id="<?php echo htmlspecialchars($question->name); ?>" name="<?php echo $question->id; ?>"></textarea><br />
-			<?php
-				} else if($question->type == 1){
-					// dropdown
-			?>
-			  <label for="<?php echo htmlspecialchars($question->name); ?>"><?php echo htmlspecialchars($question->question); ?></label>
-			  <select name="<?php echo $question->id; ?>" id="<?php echo htmlspecialchars($question->name); ?>" class="form-control">
-			    <?php
-				$options = explode(',', $question->options);
-				foreach($options as $option){
-				?>
-				  <option value="<?php echo htmlspecialchars($option); ?>"><?php echo htmlspecialchars($option); ?></option>
-				<?php
-				}
-				?>
-			  </select><br />
-			<?php
-				} else {
-					// normal input tag
-			?>
-			  <label for="<?php echo htmlspecialchars($question->name); ?>"><?php echo htmlspecialchars($question->question); ?></label>
-			  <input type="text" class="form-control" id="<?php echo htmlspecialchars($question->name); ?>" name="<?php echo $question->id; ?>"><br />
-			<?php
-				}
-			}
-			
-			?>
-			  <br />
-			  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
-			  <input type="submit" class="btn btn-primary" value="<?php echo $banappeal_language['submit']; ?>">
-			</form>
-		  </div>
+	<br />
+    <div class="container">	
+	  <div class="row">
+		<div class="col-md-3">
+		  <?php require('pages/mod/sidebar.php'); ?>
 		</div>
-		<?php
-		} else {
-			if(Session::exists('app_success')){
-				echo Session::flash('app_success');
+		<div class="col-md-9">
+			<h2><?php echo $banappeal_language['ban_appeal']; ?></h2>
+			<?php 
+			if(!isset($_GET['app'])){
+			?>
+			<div class="well well-sm">
+				<?php
+					if(!isset($_GET['view'])){ 
+						// Get open ban appeal
+						$applications = $queries->getWhere('banappeal_replies', array('status', '=', 0));
+						echo $banappeal_language['viewing_open_ban_appeal'] . '<br /><br />';
+					} else if(isset($_GET['view']) && $_GET['view'] == 'accepted'){ 
+						// Get accepted ban appeal
+						$applications = $queries->getWhere('banappeal_replies', array('status', '=', 1));
+						echo $banappeal_language['viewing_accepted_ban_appeal'] . '<br /><br />';
+					} else if(isset($_GET['view']) && $_GET['view'] == 'declined'){ 
+						// Get declined ban appeal
+						$applications = $queries->getWhere('banappeal_replies', array('status', '=', 2));
+						echo $banappeal_language['viewing_declined_ban_appeal'] . '<br /><br />';
+					} 
+					if(count($applications)){
+				?>
+				<table class="table table-striped">
+				  <thead>
+				    <tr>
+				      <th></th>
+					  <th><?php echo $user_language['minecraft_username']; ?></th>
+					  <th><?php echo $banappeal_language['time_applied']; ?></th>
+				    </tr>
+				  </thead>
+				  <?php 
+					  foreach($applications as $application){ 
+						// Get username
+						$username = $user->IdToMCName($application->uid);
+				  ?>
+				  <tbody>
+				    <tr>
+				      <td><a href="/mod/banappeal/?app=<?php echo $application->id; ?>" class="btn btn-info btn-xs"><?php echo $general_language['view']; ?></a></td>
+					  <td><a href="/profile/<?php echo htmlspecialchars($username); ?>"><?php echo htmlspecialchars($username); ?></a></td>
+					  <td><?php echo date('d M Y, G:i', $application->time); ?></td>
+				    </tr>
+				  </tbody>
+				  <?php } ?>
+				</table>
+				<?php
+					} else {
+						echo $banappeal_language['no_ban_appeal'];
+					}
+				?>
+			</div>
+			<?php
+			} else {
+				$username = htmlspecialchars($user->idToMCName($application->uid));
+				if(Session::exists('mod_staff_app')){
+				  echo Session::flash('mod_staff_app');
+				}
+				
+                echo str_replace('{x}', '<a href="/profile/' . $username . '">' . $username . '</a>', $mod_language['viewing_app_from']);
+				if($application->status == 0){ 
+					?>
+					<span class="label label-info"><?php echo $mod_language['open']; ?></span>
+					<?php 
+				} else if($application->status == 1){ 
+					?>
+					<span class="label label-success"><?php echo $mod_language['accepted']; ?></span>
+					<?php 
+				} else if($application->status == 2){ 
+					?>
+					<span class="label label-danger"><?php echo $mod_language['declined']; ?></span>
+					<?php 
+				} 
+				?>
+			<div class="well well-sm">
+			<span class="pull-right">
+			  <?php 
+			  // Can the user accept banappeal?
+			  if($application->status == 0 && $user->canAcceptApps($user->data()->id)){
+			  ?>
+			  <div class="btn-group">
+			    <a href="/mod/banappeal/?app=<?php echo $application->id; ?>&action=accept" class="btn btn-success"><?php echo $banappeal_language['accept']; ?></a><a href="/mod/banappeal/?app=<?php echo $application->id; ?>&action=reject" class="btn btn-danger"><?php echo $banappeal_language['decline']; ?></a>
+			  </div>
+			  <?php
+			  }
+			  ?>
+			</span><br /><br />
+			<hr>
+			<?php 
+			foreach($answers as $answer){
+				// Get the question itself from the ID
+				foreach($questions as $key => $item){
+					if($item->id == $answer[0]){
+					  echo '<strong>' . htmlspecialchars($item->question) . '</strong>'; 
+					}
+				}
+				echo '<p>' . htmlspecialchars($answer[1]) . '</p>';
 			}
-			if($completed === 2){
-		?>
-		<div class="alert alert-info"><?php echo $banappeal_language['ban_appeal_already_submitted']; ?></div>
-		<?php
+			?>
+			<hr>
+			<h4><?php echo $mod_language['comments']; ?></h4>
+			<?php
+			// Get comments
+			$comments = $queries->getWhere('banappeal_comments', array('aid', '=', $application->id));
+			if(count($comments)){
+				foreach($comments as $comment){
+					$username = htmlspecialchars($user->idToName($comment->uid));
+					$mcusername = htmlspecialchars($user->idToMCName($comment->uid));
+			?>
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+				<a class="white-text" href="/profile/<?php echo $mcusername; ?>"><?php echo $username; ?></a>
+				<span class="pull-right">
+				  <?php echo date('jS M Y , g:ia', $comment->time); ?>
+				</span>
+			  </div>
+			  <div class="panel-body">
+				<?php
+				// Purify comment
+				$config = HTMLPurifier_Config::createDefault();
+				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
+				$config->set('URI.DisableExternalResources', false);
+				$config->set('URI.DisableResources', false);
+				$config->set('HTML.Allowed', 'u,p,a,b,i,small,blockquote,span[style],span[class],p,strong,em,li,ul,ol,div[align],br,img');
+				$config->set('CSS.AllowedProperties', array('float', 'color','background-color', 'background', 'font-size', 'font-family', 'text-decoration', 'font-weight', 'font-style', 'font-size'));
+				$config->set('HTML.AllowedAttributes', 'target, href, src, height, width, alt, class, *.style');
+				$config->set('Attr.AllowedFrameTargets', array('_blank', '_self', '_parent', '_top'));
+				$purifier = new HTMLPurifier($config);
+				echo $purifier->purify(htmlspecialchars_decode($comment->content));
+				?>
+			  </div>
+			</div>
+			<?php 
+				} 
 			}
-		}
-		?>
-	  </div>
+			?>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<?php echo $banappeal_language['new_comment']; ?>
+				</div>
+				<div class="panel-body">
+					<form action="" method="post">
+						<textarea name="comment" class="form-control" rows="3"></textarea>
+						<br />
+						<?php echo '<input type="hidden" name="token" value="' . $token . '">'; ?>
+						<button type="submit" class="btn btn-danger">
+						  <?php echo $banappeal_language['submit']; ?>
+						</button>
+					</form>
+				</div>
+			</div>
+			</div>
+			<?php
+			}
+			?>
+		</div>
+      </div>
     </div>
-    <?php
+	<?php
 	// Footer
 	require('core/includes/template/footer.php');
 	$smarty->display('styles/templates/' . $template . '/footer.tpl');
