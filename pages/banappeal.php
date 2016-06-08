@@ -103,7 +103,7 @@ $page = $banappeal_language['ban_appeal'];
 	<?php
 	// Generate header and navbar content
 	// Page title
-	$title = $navbar_language['staff_apps'];
+	$title = $banappeal_language['ban_appeal'];
 	
 	require('core/includes/template/generate.php');
 	?>
