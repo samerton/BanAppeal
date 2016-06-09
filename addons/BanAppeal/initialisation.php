@@ -13,3 +13,7 @@ require('addons/BanAppeal/language.php');
 
 // Enabled, add links to navbar
 $navbar_array[] = array('banappeal' => $banappeal_language['ban_appeal_icon'] . $banappeal_language['ban_appeal']);
+$custom_mod_sidebar['banappeal'] = array(
+	'url' => '/mod/banappeal',
+	'title' => $banappeal_language['ban_appeal']
+);

@@ -8,11 +8,11 @@
 $banappeal_language = array(
 	'ban_appeal' => 'Ban Appeal',
 	'ban_appeal_icon' => '', // Icon to display before the text in the navbar
-	'viewing_open_ban_appeal' => 'Viewing <span class="label label-info">open</span> ban appeal. Change to <a href="/mod/banappeal/?view=accepted"><span class="label label-success">accepted</span></a> or <a href="/mod/banappeal/?view=declined"><span class="label label-danger">declined</span></a>.',
-	'viewing_accepted_ban_appeal' => 'Viewing <span class="label label-success">accepted</span> ban appeal. Change to <a href="/mod/banappeal/"><span class="label label-info">open</span></a> or <a href="/mod/banappeal/?view=declined"><span class="label label-danger">declined</span></a>.',
-	'viewing_declined_ban_appeal' => 'Viewing <span class="label label-danger">declined</span> ban appeal. Change to <a href="/mod/banappeal/"><span class="label label-info">open</span></a> or <a href="/mod/banappeal/?view=accepted"><span class="label label-success">accepted</span></a>.',
+	'viewing_open_ban_appeal' => 'Viewing <span class="label label-info">open</span> ban appeals. Change to <a href="/mod/banappeal/?view=accepted"><span class="label label-success">accepted</span></a> or <a href="/mod/banappeal/?view=declined"><span class="label label-danger">declined</span></a>.',
+	'viewing_accepted_ban_appeal' => 'Viewing <span class="label label-success">accepted</span> ban appeals. Change to <a href="/mod/banappeal/"><span class="label label-info">open</span></a> or <a href="/mod/banappeal/?view=declined"><span class="label label-danger">declined</span></a>.',
+	'viewing_declined_ban_appeal' => 'Viewing <span class="label label-danger">declined</span> ban appeals. Change to <a href="/mod/banappeal/"><span class="label label-info">open</span></a> or <a href="/mod/banappeal/?view=accepted"><span class="label label-success">accepted</span></a>.',
 	'time_applied' => 'Time Applied',
-	'no_ban_appeal' => 'No Ban Appeal in this category',
+	'no_ban_appeal' => 'No Ban Appeals in this category',
 	'viewing_ban_appeal_from' => 'Viewing Ban Appeal from {x}', // Don't replace "{x}"
 	'open' => 'Open',
 	'accepted' => 'Accepted',
@@ -30,8 +30,8 @@ $banappeal_language = array(
 	'ban_appeal_accepted' => 'Your ban appeal has been accepted.',
 	'ban_appeal_rejected' => 'Your ban appeal has been rejected.',
 	'permissions' => 'Permissions:',
-	'view_ban_appeal' => 'View Ban Appeal?',
-	'accept_reject_ban_appeal' => 'Accept/Reject Ban Appeal?',
+	'view_ban_appeal' => 'View Ban Appeals?',
+	'accept_reject_ban_appeal' => 'Accept/Reject Ban Appeals?',
 	'questions' => 'Questions:',
 	'question' => 'Question',
 	'type' => 'Type',
