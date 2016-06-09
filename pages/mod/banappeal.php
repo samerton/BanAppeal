@@ -16,6 +16,10 @@ if($user->isLoggedIn()){
 }
 // page for ModCP sidebar
 $mod_page = 'banappeal';
+
+require('addons/BanAppeal/BanAppeal.php');
+$banappeal = new BanAppeal();
+
 if(isset($_GET['app'])){
 	// Does the ban appeal exist?
 	$application = $queries->getWhere('banappeal_replies', array('id', '=', htmlspecialchars($_GET['app'])));
@@ -64,9 +68,10 @@ if(isset($_GET['app'])){
 			$answers = json_decode($application->content, true);
 			// Get questions
 			$questions = $queries->getWhere('banappeal_questions', array('id', '<>', 0));
+			
 		} else {
 			// Can the user actually accept an application?
-			if($user->canAcceptBanAppeal($user->data()->id)){
+			if($banappeal->canAcceptBanAppeal($user->data()->id)){
 				// Who posted the app?
 				$user_posted = $application->uid;
 				
@@ -98,6 +103,7 @@ if(isset($_GET['app'])){
 					));
 					
 				}
+				
 			}
 			Redirect::to('/mod/banappeal/?app=' . $application->id);
 			die();
@@ -224,7 +230,7 @@ require('core/includes/htmlpurifier/HTMLPurifier.standalone.php');
 			<span class="pull-right">
 			  <?php 
 			  // Can the user accept banappeal?
-			  if($application->status == 0 && $user->canAcceptBanAppeal($user->data()->id)){
+			  if($application->status == 0 && $banappeal->canAcceptBanAppeal($user->data()->id)){
 			  ?>
 			  <div class="btn-group">
 			    <a href="/mod/banappeal/?app=<?php echo $application->id; ?>&action=accept" class="btn btn-success"><?php echo $banappeal_language['accept']; ?></a><a href="/mod/banappeal/?app=<?php echo $application->id; ?>&action=reject" class="btn btn-danger"><?php echo $banappeal_language['decline']; ?></a>

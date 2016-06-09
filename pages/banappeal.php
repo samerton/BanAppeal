@@ -122,7 +122,7 @@ $page = $banappeal_language['ban_appeal'];
 	// Load navbar
 	$smarty->display('styles/templates/' . $template . '/navbar.tpl');
 	?>
-	
+	<br />
 	<div class="container">
 	<?php 
 	    if(Session::exists('staff_app')){

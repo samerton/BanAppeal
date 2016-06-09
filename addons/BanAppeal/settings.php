@@ -23,8 +23,12 @@ if($user->isLoggedIn()){
 	die();
 }
 
+// Check language has been loaded, if not load now
+if(!isset($banappeal_language)) require('addons/BanAppeal/language.php');
+
 $banappeal_questions = $queries->tableExists('banappeal_questions');
 if(empty($banappeal_questions)){
+		// Create/update tables
 		$data = $queries->alterTable("groups", "banappeal", "tinyint(1) NOT NULL DEFAULT '0'");
  		$data = $queries->alterTable("groups", "accept_banappeal", "tinyint(1) NOT NULL DEFAULT '0'");
  		$data = $queries->createTable("banappeal_comments", " `id` int(11) NOT NULL AUTO_INCREMENT, `aid` int(11) NOT NULL, `uid` int(11) NOT NULL, `time` int(11) NOT NULL, `content` mediumtext NOT NULL, PRIMARY KEY (`id`)", "ENGINE=InnoDB DEFAULT CHARSET=latin1");
@@ -35,9 +39,9 @@ if(empty($banappeal_questions)){
 ?>
 <h3>Addon: BanAppeal</h3>
 <b>Authors:</b> Partydragen<br />
-<b>Version:</b> 1.0.0<br />
+<b>Version:</b> 1.0.1<br />
 <b>Description:</b> Allow your players to post a Ban Appeal<br />
-<b>Donate:</b> <a href="http://partydragen.com/donate/">Click here</a> If you want to donate to partydragen to give partydragen more motivation to keep updates and create more addons<br />
+<b>Donate:</b> <a href="http://partydragen.com/donate/" target="_blank">Click here</a> If you want to donate to partydragen to give partydragen more motivation to keep updates and create more addons<br />
 
 						<h3><?php echo $banappeal_language['ban_appeal']; ?></h3>
 						<?php 
