@@ -3,6 +3,8 @@
  *	Made by Partydragen
  *  http://partydragen.com/
  *
+ *  Updated by Samerton
+ *
  */
 // Settings for the BanAppeal addon
 // Ensure user is logged in, and is admin
@@ -76,6 +78,11 @@ if(empty($banappeal_questions)){
 												die($e->getMessage());
 											}
 										}
+										
+										// Link location
+										$c->setCache('banappeal');
+										$c->store('linklocation', htmlspecialchars(Input::get('linkposition')));
+										
 									} else {
 										Session::flash('apps_post_success', '<div class="alert alert-danger">' . $admin_language['invalid_token'] . '</div>');
 										echo '<script data-cfasync="false">window.location.replace("/admin/addons/?action=edit&addon=BanAppeal")</script>';
@@ -87,47 +94,69 @@ if(empty($banappeal_questions)){
 								$groups = $queries->getWhere('groups', array('id', '<>', '0'));
 						?>
 						<form role="form" action="" method="post">
-						  <strong><?php echo $banappeal_language['permissions']; ?></strong><br /><br />
-						  <div class="row">
-						    <div class="col-md-8">
-							  <div class="col-md-6">
-							    <?php echo $banappeal_language['groups']; ?>
+						  <div class="form-group">
+						    <strong><?php echo $banappeal_language['permissions']; ?></strong><br /><br />
+						    <div class="row">
+						      <div class="col-md-8">
+							    <div class="col-md-6">
+							      <?php echo $banappeal_language['groups']; ?>
+							    </div>
+							    <div class="col-md-3">
+							      <?php echo $banappeal_language['view_ban_appeal']; ?>
+							    </div>
+							    <div class="col-md-3">
+							      <?php echo $banappeal_language['accept_reject_ban_appeal']; ?>
+							    </div>
 							  </div>
-							  <div class="col-md-3">
-							    <?php echo $banappeal_language['view_ban_appeal']; ?>
-							  </div>
-							  <div class="col-md-3">
-							    <?php echo $banappeal_language['accept_reject_ban_appeal']; ?>
-							  </div>
-							</div>
-						  </div>
+						    </div>
 
-						  <?php
-						  foreach($groups as $group){
-						  ?>
-						  <div class="row">
-						    <div class="col-md-8">
-							  <div class="col-md-6">
-							    <?php echo htmlspecialchars($group->name); ?><br /><br />
-							  </div>
-							  <div class="col-md-3">
-							    <div class="form-group">
-								  <input id="view-<?php echo $group->id; ?>" name="view-<?php echo $group->id; ?>" type="checkbox" class="js-switch" <?php if($group->banappeal == 1){ ?>checked <?php } ?>/>
+						    <?php
+						    foreach($groups as $group){
+						    ?>
+						    <div class="row">
+						      <div class="col-md-8">
+							    <div class="col-md-6">
+							      <?php echo htmlspecialchars($group->name); ?><br /><br />
+							    </div>
+							    <div class="col-md-3">
+							      <div class="form-group">
+								    <input id="view-<?php echo $group->id; ?>" name="view-<?php echo $group->id; ?>" type="checkbox" class="js-switch" <?php if($group->banappeal == 1){ ?>checked <?php } ?>/>
+							      </div>
+							    </div>
+							    <div class="col-md-3">
+							      <div class="form-group">
+								    <input id="accept-<?php echo $group->id; ?>" name="accept-<?php echo $group->id; ?>" type="checkbox" class="js-switch" <?php if($group->accept_banappeal == 1){ ?>checked <?php } ?>/>
+							      </div>
 							    </div>
 							  </div>
-							  <div class="col-md-3">
-							    <div class="form-group">
-								  <input id="accept-<?php echo $group->id; ?>" name="accept-<?php echo $group->id; ?>" type="checkbox" class="js-switch" <?php if($group->accept_banappeal == 1){ ?>checked <?php } ?>/>
-							    </div>
-							  </div>
-							</div>
+						    </div>
+						    <?php
+						    }
+						    ?>
 						  </div>
-						  <?php
-						  }
-						  ?>
-						  <br /><br />
-						  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
-						  <input type="submit" class="btn btn-default" value="<?php echo $banappeal_language['submit']; ?>">
+						  <div class="form-group">
+						    <label for="InputLinkPosition"><?php echo $admin_language['page_link_location']; ?></label>
+							<?php
+							// Get position of link
+							$c->setCache('banappeal');
+							if($c->isCached('linklocation')){
+								$link_location = $c->retrieve('linklocation');
+							} else {
+								$c->store('linklocation', 'navbar');
+								$link_location = 'navbar';
+							}
+							?>
+						    <select name="linkposition" id="InputLinkPosition" class="form-control">
+							  <option value="navbar" <?php if($link_location == 'navbar'){ echo 'selected="selected"'; } ?>><?php echo $admin_language['page_link_navbar']; ?></option>
+							  <option value="more" <?php if($link_location == 'more'){ echo 'selected="selected"'; } ?>><?php echo $admin_language['page_link_more']; ?></option>
+							  <option value="footer" <?php if($link_location == 'footer'){ echo 'selected="selected"'; } ?>><?php echo $admin_language['page_link_footer']; ?></option>
+							  <option value="none" <?php if($link_location == 'none'){ echo 'selected="selected"'; } ?>><?php echo $admin_language['page_link_none']; ?></option>
+							</select>
+						  </div>
+						  <div class="form-group">
+						    <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+						    <input type="submit" class="btn btn-default" value="<?php echo $banappeal_language['submit']; ?>">
+						  </div>
 						</form>
 						
 						<br /><br />
